@@ -3,6 +3,7 @@ const uuid = require('uuid');
 const LocalDate = require("@js-joda/core");
 const Util = require('../utils/Util');
 const { raw } = require('mysql');
+const moment = require('moment');
 
 module.exports = {
     getKidsFromUser: function (userId, callback) {
@@ -29,7 +30,7 @@ module.exports = {
             first_name: kidData.firstName,
             last_name: kidData.lastName,
             identification_number: kidData.identificationNumber,
-            birthdate: kidData.birthdate,
+            birthdate: moment(kidData.birthdate, 'DD/MM/YYYY').format('YYYY-MM-DD'),
             gender: kidData.gender,
             relationship: kidData.relationship,
             avatar_image: kidData.avatarImage,
