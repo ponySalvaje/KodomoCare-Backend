@@ -16,6 +16,7 @@ module.exports = {
                                     "userId": user.id
                                 }
                             }),
+                            "profileImage": user.avatarImage
                         });
                     } else {
                         console.log("Password did not match!");

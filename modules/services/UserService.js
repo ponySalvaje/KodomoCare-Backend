@@ -19,4 +19,9 @@ module.exports = {
             }
         })
     },
+    getUserInformation: function (userId, response) {
+        return userRepository.getUserInformation(userId, function (user) {
+            return response(user);
+        })
+    }
 }
