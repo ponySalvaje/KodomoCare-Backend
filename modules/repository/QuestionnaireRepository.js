@@ -61,5 +61,53 @@ module.exports = {
             return this.getQuestionnaireFromKid(kidId, callback);
         });
         databaseConfig.closeConnection();
+    },
+    finishQuestionnaire: function (kidId, callback) {
+        databaseConfig.getSession().query('UPDATE questionnaire SET status = 1, updated_date = DATE(NOW()) WHERE kid_id = ?', kidId, (err, result) => {
+            if (err) return callback(err);
+
+            return this.getQuestionnaireFromKid(kidId, callback);
+        });
+        databaseConfig.closeConnection();
+    },
+    addNewQuestionnaire: function (kidId, callback) {
+        let insertObject = {
+            id: uuid.v4(),
+            kid_id: kidId,
+            status: 0,
+            updated_date: LocalDate.LocalDate.now().toString(),
+        }
+        databaseConfig.getSession().query('INSERT INTO questionnaire SET ?', insertObject, (err, result) => {
+            if (err) return callback(err);
+
+            return this.getQuestionnaireFromKid(kidId, callback);
+        });
+        databaseConfig.closeConnection();
+    },
+    addEvaluation: function (questionnaireId, evaluationData, callback) {
+        let insertObject = {
+            id: uuid.v4(),
+            type: evaluationData.type,
+            score: evaluationData.score,
+            answers: JSON.stringify(evaluationData.answers),
+            created_date: LocalDate.LocalDate.now().toString(),
+            questionnaire_id: questionnaireId
+        }
+        databaseConfig.getSession().query('INSERT INTO evaluation SET ?', insertObject, (err, result) => {
+            if (err) return callback(err);
+
+            return this.getEvaluationCountFromQuestionnaire(questionnaireId, callback);
+        });
+        databaseConfig.closeConnection();
+    },
+    getEvaluationCountFromQuestionnaire: function (questionnaireId, callback) {
+        databaseConfig.getSession().query('select count(*) as count from evaluation e where e.questionnaire_id = ?', questionnaireId, (err, rows) => {
+            if (err) return callback(err);
+            let rawResult = rows[0];
+            return callback({
+                count: rawResult.count
+            })
+        });
+        databaseConfig.closeConnection();
     }
 }
