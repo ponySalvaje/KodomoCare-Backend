@@ -66,5 +66,15 @@ module.exports = {
             }
         });
         databaseConfig.closeConnection();
+    },
+    updateUserInformation: function (userId, userData, callback) {
+        databaseConfig.getSession().query('UPDATE user r SET r.first_name = ?, r.last_name = ?, r.identification_number = ?, r.avatar_image = ? WHERE r.id = ?', [userData.firstName, userData.lastName, userData.identificationNumber, userData.avatarImage, userId], (err, result) => {
+            if (err) {
+                console.log(err);
+                return callback(null);
+            }
+            return this.getUserInformation(userId, callback);
+        });
+        databaseConfig.closeConnection();
     }
 }

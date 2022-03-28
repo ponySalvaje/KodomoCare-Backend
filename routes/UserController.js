@@ -30,4 +30,18 @@ router.get('/', securityUtils.authenticateToken, (req, res) => {
     });
 })
 
+router.put('/', securityUtils.authenticateToken, (req, res) => {
+    const userId = req.claims.payload.user.userId;
+    const body = req.body;
+    userService.updateUserInformation(userId, body, function (result) {
+        if (result === null) {
+            res.status(500).send("Internal Server Error");
+        } else if (result.error != null) {
+            res.status(422).send(result);
+        } else {
+            res.status(200).send(result);
+        }
+    });
+})
+
 module.exports = router;
