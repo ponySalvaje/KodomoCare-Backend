@@ -48,6 +48,9 @@ module.exports = {
         });
         databaseConfig.closeConnection();
     },
+    getCompletedQuestionnaireForKids: function (kids, callback) {
+
+    },
     addQuestionnaire: function (kidId, callback) {
         let insertObject = {
             id: uuid.v4(),

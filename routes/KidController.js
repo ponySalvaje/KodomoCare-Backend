@@ -31,6 +31,19 @@ router.get('/questionnaire/:kidId', securityUtils.authenticateToken, (req, res) 
     });
 })
 
+router.get('/questionnaires-completed', securityUtils.authenticateToken, (req, res) => {
+    const userId = req.claims.payload.user.userId;
+    kidService.getKidsWithQuestionnairesCompleted(userId, function (result) {
+        if (result === null) {
+            res.status(500).send("Internal Server Error");
+        } else if (result.error != null) {
+            res.status(422).send(result);
+        } else {
+            res.status(200).send(result);
+        }
+    });
+})
+
 router.post('/evaluation/:kidId', securityUtils.authenticateToken, (req, res) => {
     const kidId = req.params.kidId;
     const body = req.body;
