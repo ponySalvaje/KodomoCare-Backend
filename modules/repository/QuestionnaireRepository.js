@@ -94,7 +94,8 @@ module.exports = {
             score: evaluationData.score,
             answers: JSON.stringify(evaluationData.answers),
             created_date: LocalDate.LocalDate.now().toString(),
-            questionnaire_id: questionnaireId
+            questionnaire_id: questionnaireId,
+            rating: evaluationData.rating
         }
         databaseConfig.getSession().query('INSERT INTO evaluation SET ?', insertObject, (err, result) => {
             if (err) return callback(err);

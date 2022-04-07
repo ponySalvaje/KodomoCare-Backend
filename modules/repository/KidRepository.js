@@ -25,7 +25,7 @@ module.exports = {
         databaseConfig.closeConnection();
     },
     getKidsWithQuestionnairesCompletedFromUser: function (userId, callback) {
-        databaseConfig.getSession().query(`SELECT k.id, first_name, last_name, avatar_image, birthdate, q.id as questionnaire_id, q.status, q.updated_date, e.id as evaluation_id, e.type, e.score
+        databaseConfig.getSession().query(`SELECT k.id, first_name, last_name, avatar_image, birthdate, q.id as questionnaire_id, q.status, q.updated_date, e.id as evaluation_id, e.type, e.score, e.rating
             FROM kid k left join questionnaire q on k.id = q.kid_id 
             left join evaluation e on e.questionnaire_id = q.id
             where k.user_id = ?`, userId, (err, result) => {
@@ -65,7 +65,8 @@ module.exports = {
                         evaluations.push({
                             id: evaluation.evaluation_id,
                             type: evaluation.type,
-                            score: evaluation.score
+                            score: evaluation.score,
+                            rating: evaluation.rating
                         })
                     })
                     rawQuestionnaire.evaluations = evaluations;
