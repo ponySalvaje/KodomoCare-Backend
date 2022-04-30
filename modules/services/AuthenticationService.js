@@ -13,7 +13,8 @@ module.exports = {
                             "token": securityUtil.generateAccessToken({
                                 "user": {
                                     "username": user.username,
-                                    "userId": user.id
+                                    "userId": user.id,
+                                    "roleId": user.roleId
                                 }
                             }),
                             "profileImage": user.avatarImage

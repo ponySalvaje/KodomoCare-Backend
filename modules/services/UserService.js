@@ -28,5 +28,10 @@ module.exports = {
         return userRepository.updateUserInformation(userId, userData, function (user) {
             return response(user);
         })
+    },
+    getUsers: function (response) {
+        return userRepository.getUsers(function (users) {
+            return response(users);
+        })
     }
 }

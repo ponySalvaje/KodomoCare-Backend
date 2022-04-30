@@ -10,6 +10,7 @@ const logger = require('morgan');
 const authenticationController = require('./routes/AuthenticationController');
 const userController = require('./routes/UserController');
 const kidController = require('./routes/KidController');
+const adminController = require('./routes/AdminController');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -23,6 +24,7 @@ app.use(cors());
 app.use('', authenticationController);
 app.use('/users', userController);
 app.use('/kids', kidController);
+app.use('/admin', adminController);
 
 app.disable('etag');
 

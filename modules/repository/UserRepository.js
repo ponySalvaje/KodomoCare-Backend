@@ -76,5 +76,24 @@ module.exports = {
             return this.getUserInformation(userId, callback);
         });
         databaseConfig.closeConnection();
-    }
+    },
+    getUsers: function (callback) {
+        databaseConfig.getSession().query('SELECT username, email, first_name, last_name, identification_number, avatar_image FROM user WHERE role_id = 1', [], (err, result) => {
+            if (err) {
+                console.log(err);
+                return callback(null);
+            }
+            let parsedResult = [];
+            result.forEach(rawResult => parsedResult.push({
+                username: rawResult.username,
+                email: rawResult.email,
+                firstName: rawResult.first_name,
+                lastName: rawResult.last_name,
+                identificationNumber: rawResult.identification_number,
+                avatarImage: rawResult.avatar_image
+            }))
+            return callback(parsedResult);
+        });
+        databaseConfig.closeConnection();
+    },
 }
