@@ -27,6 +27,15 @@ module.exports = {
             }
         })
     },
+    getKidsWithQuestionnairesCompletedFromAdmin: function (userId, response) {
+        kidRepository.getKidsWithQuestionnairesCompleted(userId, function (kids) {
+            if (kids === undefined) {
+                return response({ "error": "No se encontraron niños" })
+            } else {
+                return response(kids);
+            }
+        })
+    },
     getCurrentQuestionnaire: function (kidId, response) {
         kidRepository.getActiveQuestionnaireFromKid(kidId, function (questionnaireResult) {
             questionnaireRepository.getEvaluationsFromQuestionnaire(questionnaireResult.id, function (evaluations) {

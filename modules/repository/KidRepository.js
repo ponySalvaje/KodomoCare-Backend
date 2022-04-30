@@ -80,6 +80,62 @@ module.exports = {
         });
         databaseConfig.closeConnection();
     },
+    getKidsWithQuestionnairesCompleted: function (userId, callback) {
+        databaseConfig.getSession().query(`SELECT k.id, first_name, last_name, avatar_image, birthdate, q.id as questionnaire_id, q.status, q.updated_date, e.id as evaluation_id, e.type, e.answers, e.score, e.rating
+            FROM kid k left join questionnaire q on k.id = q.kid_id 
+            left join evaluation e on e.questionnaire_id = q.id
+            where k.user_id = ?`, userId, (err, result) => {
+            if (err) {
+                console.log(err);
+                return callback(null);
+            }
+            let parsedResult = [];
+            result.forEach(raw => {
+                if (parsedResult.find(x => x.id === raw.id) == undefined) {
+                    parsedResult.push({
+                        id: raw.id,
+                        firstName: raw.first_name,
+                        lastName: raw.last_name,
+                        avatarImage: raw.avatar_image,
+                        months: Util.calculateAgeInMonths(raw.birthdate)
+                    });
+                }
+            });
+            parsedResult.forEach(raw => {
+                let questionnaires = [];
+                let questionnaireRows = result.filter(x => x.id == raw.id);
+                questionnaireRows.forEach(questionnaire => {
+                    if (questionnaires.find(x => x.id === questionnaire.questionnaire_id) == undefined && questionnaire.status == 1) {
+                        questionnaires.push({
+                            id: questionnaire.questionnaire_id,
+                            status: questionnaire.status,
+                            updatedDate: questionnaire.updated_date
+                        });
+                    }
+                });
+
+                questionnaires.forEach(rawQuestionnaire => {
+                    let evaluations = [];
+                    let evaluationRows = result.filter(x => x.questionnaire_id == rawQuestionnaire.id);
+                    evaluationRows.forEach(evaluation => {
+                        evaluations.push({
+                            id: evaluation.evaluation_id,
+                            type: evaluation.type,
+                            answers: JSON.parse(evaluation.answers),
+                            score: evaluation.score,
+                            rating: evaluation.rating
+                        })
+                    })
+                    rawQuestionnaire.evaluations = evaluations;
+                });
+
+                raw.questionnaires = questionnaires;
+            });
+
+            return callback(parsedResult);
+        });
+        databaseConfig.closeConnection();
+    },
     getActiveQuestionnaireFromKid: function (kidId, callback) {
         databaseConfig.getSession().query('SELECT id, kid_id, status, updated_date FROM questionnaire q where q.kid_id = ? and q.status = 0', kidId, (err, rows) => {
             if (err) {
