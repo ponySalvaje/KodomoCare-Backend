@@ -49,13 +49,14 @@ module.exports = {
         databaseConfig.closeConnection();
     },
     getUserInformation: function (userId, callback) {
-        databaseConfig.getSession().query('SELECT username, email, first_name, last_name, identification_number, avatar_image FROM user WHERE id = ?', userId, (err, rows) => {
+        databaseConfig.getSession().query('SELECT id, username, email, first_name, last_name, identification_number, avatar_image FROM user WHERE id = ?', userId, (err, rows) => {
             if (err) return callback(err);
             let rawResult = rows[0];
             if (rawResult === undefined) {
                 return callback(null);
             } else {
                 return callback({
+                    id: rawResult.id,
                     username: rawResult.username,
                     email: rawResult.email,
                     firstName: rawResult.first_name,

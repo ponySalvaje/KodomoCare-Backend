@@ -27,20 +27,29 @@ module.exports = {
             }
         })
     },
-    getKidsWithQuestionnairesCompletedFromAdmin: function (userId, response) {
-        kidRepository.getKidsWithQuestionnairesCompleted(userId, function (kids) {
-            if (kids === undefined) {
-                return response({ "error": "No se encontraron niños" })
-            } else {
-                return response(kids);
-            }
-        })
-    },
     getCurrentQuestionnaire: function (kidId, response) {
         kidRepository.getActiveQuestionnaireFromKid(kidId, function (questionnaireResult) {
             questionnaireRepository.getEvaluationsFromQuestionnaire(questionnaireResult.id, function (evaluations) {
                 return response(evaluations);
             })
+        })
+    },
+    getKidInformation: function (kidId, response) {
+        kidRepository.getKidInformation(kidId, function (result) {
+            if (result === undefined) {
+                return response({ "error": "No se encontraron niños" })
+            } else {
+                return response(result);
+            }
+        })
+    },
+    updateKidInformation: function (kidId, kidData, response) {
+        kidRepository.updateKidInformation(kidId, kidData, function (result) {
+            if (result === undefined) {
+                return response({ "error": "No se encontraron niños" })
+            } else {
+                return response(result);
+            }
         })
     }
 }
