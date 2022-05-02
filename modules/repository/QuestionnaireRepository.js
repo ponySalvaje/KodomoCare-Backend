@@ -23,6 +23,21 @@ module.exports = {
         });
         databaseConfig.closeConnection();
     },
+    getEvaluations: function (callback) {
+        databaseConfig.getSession().query('select e.id, TIMESTAMPDIFF(MONTH, k.birthdate, e.created_date) as month_test from evaluation e join questionnaire q on e.questionnaire_id = q.id join kid k on k.id = q.kid_id where q.status = 1', [], (err, result) => {
+            if (err) {
+                console.log(err);
+                return callback(null);
+            }
+            let parsedResult = [];
+            result.forEach(rawResult => parsedResult.push({
+                id: rawResult.id,
+                month_test: rawResult.month_test
+            }))
+            return callback(parsedResult);
+        });
+        databaseConfig.closeConnection();
+    },
     getQuestionnaireFromKid: function (kidId, callback) {
         databaseConfig.getSession().query('SELECT id, kid_id, status, updated_date FROM questionnaire q where q.kid_id = ? and q.status = 0', kidId, (err, result) => {
             if (err) {

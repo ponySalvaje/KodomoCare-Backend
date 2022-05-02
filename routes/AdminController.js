@@ -58,6 +58,23 @@ router.get('/questionnaires/', securityUtils.authenticateToken, (req, res) => {
     }
 })
 
+router.get('/evaluations-month/', securityUtils.authenticateToken, (req, res) => {
+    const roleId = req.claims.payload.user.roleId;
+    if (roleId != 2) {
+        res.status(500).send("Internal Server Error");
+    } else {
+        questionnaireService.getEvaluations(function (result) {
+            if (result === null) {
+                res.status(500).send("Internal Server Error");
+            } else if (result.error != null) {
+                res.status(422).send(result);
+            } else {
+                res.status(200).send(result);
+            }
+        });
+    }
+})
+
 router.get('/user/:userId', securityUtils.authenticateToken, (req, res) => {
     const roleId = req.claims.payload.user.roleId;
     const userId = req.params.userId;

@@ -4,7 +4,7 @@ const LocalDate = require("@js-joda/core");
 
 module.exports = {
     findUserByUsername: function (username, callback) {
-        databaseConfig.getSession().query('SELECT id, username, email, password, first_name, last_name, identification_number, avatar_image, status, role_id, created_date FROM user WHERE username = ?', username, (err, rows) => {
+        databaseConfig.getSession().query('SELECT id, username, email, password, first_name, last_name, identification_number, avatar_image, status, role_id, created_date FROM user WHERE username = ? and status = 0', username, (err, rows) => {
             if (err) return callback(err);
             let rawResult = rows[0];
             if (rawResult === undefined) {

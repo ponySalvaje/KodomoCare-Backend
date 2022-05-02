@@ -7,6 +7,11 @@ module.exports = {
             return response(result);
         });
     },
+    getEvaluations: function (response) {
+        questionnaireRepository.getEvaluations(function (result) {
+            return response(result);
+        });
+    },
     addEvaluation: function (questionnaireId, evaluationData, kidId, response) {
         questionnaireRepository.addEvaluation(questionnaireId, evaluationData, function (evaluationsFromQuestionnaire) {
             if (evaluationsFromQuestionnaire.count == 5) {

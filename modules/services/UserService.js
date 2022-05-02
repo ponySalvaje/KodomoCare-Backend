@@ -33,5 +33,5 @@ module.exports = {
         return userRepository.getUsers(function (users) {
             return response(users);
         })
-    }
+    },
 }
