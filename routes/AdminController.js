@@ -4,6 +4,7 @@ const router = express.Router();
 const securityUtils = require('../modules/utils/SecurityUtil');
 const userService = require('../modules/services/UserService');
 const kidService = require('../modules/services/KidService');
+const questionnaireService = require('../modules/services/QuestionnaireService');
 
 router.get('/users/', securityUtils.authenticateToken, (req, res) => {
     const roleId = req.claims.payload.user.roleId;
@@ -29,6 +30,23 @@ router.get('/questionnaires-completed/:userId', securityUtils.authenticateToken,
         res.status(500).send("Internal Server Error");
     } else {
         kidService.getKidsWithQuestionnairesCompleted(userId, function (result) {
+            if (result === null) {
+                res.status(500).send("Internal Server Error");
+            } else if (result.error != null) {
+                res.status(422).send(result);
+            } else {
+                res.status(200).send(result);
+            }
+        });
+    }
+})
+
+router.get('/questionnaires/', securityUtils.authenticateToken, (req, res) => {
+    const roleId = req.claims.payload.user.roleId;
+    if (roleId != 2) {
+        res.status(500).send("Internal Server Error");
+    } else {
+        questionnaireService.getQuestionnaires(function (result) {
             if (result === null) {
                 res.status(500).send("Internal Server Error");
             } else if (result.error != null) {

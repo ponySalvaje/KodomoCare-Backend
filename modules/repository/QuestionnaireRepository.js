@@ -6,6 +6,23 @@ const { raw } = require('mysql');
 const moment = require('moment');
 
 module.exports = {
+    getQuestionnaires: function (callback) {
+        databaseConfig.getSession().query('SELECT id, kid_id, status, updated_date FROM questionnaire q where q.status = 1', [], (err, result) => {
+            if (err) {
+                console.log(err);
+                return callback(null);
+            }
+            let parsedResult = [];
+            result.forEach(rawResult => parsedResult.push({
+                id: rawResult.id,
+                kidId: rawResult.kid_id,
+                status: rawResult.status,
+                updatedDate: rawResult.updated_date
+            }))
+            return callback(parsedResult);
+        });
+        databaseConfig.closeConnection();
+    },
     getQuestionnaireFromKid: function (kidId, callback) {
         databaseConfig.getSession().query('SELECT id, kid_id, status, updated_date FROM questionnaire q where q.kid_id = ? and q.status = 0', kidId, (err, result) => {
             if (err) {
